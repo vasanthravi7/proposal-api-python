@@ -3,12 +3,14 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from langchain_core.prompts import PromptTemplate
+from flask_cors import CORS
 
 load_dotenv()
 
 llm = OpenAI(api_key= os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
+CORS(app)
 
 # Define prompt template
 prompt_template = PromptTemplate(
@@ -46,6 +48,23 @@ def generate_toc():
         # Return the generated Table of Contents
         return jsonify({"table_of_contents": toc_response.strip()})
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/creative-content', methods=['POST'])
+def get_creative_content():
+    data = request.json
+    topic = data.get('topic', None)
+    if not topic:
+        return jsonify({"error": "Topic is required"}), 400
+
+    try:
+        creative_content = [
+            "CMS and Plug-ins with the latest stable version will be handled",
+            "CMS standards will be followed while creating new document types, pages, or any such elements in the back office",
+            "Dedicated support channels for any CMS-related queries will be allocated"
+        ]
+        return jsonify({"creative_content": creative_content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
