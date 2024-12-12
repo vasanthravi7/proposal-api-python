@@ -1,0 +1,3 @@
+langchain-openai
+Flask
+python-dotenv
